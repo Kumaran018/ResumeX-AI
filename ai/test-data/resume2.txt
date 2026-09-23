@@ -1,0 +1,33 @@
+Maya Patel
+maya.patel@email.com
+Austin, TX | github.com/mayapatel
+
+SUMMARY
+Full Stack Web Developer with 3+ years of experience designing and shipping modern web applications using React, TypeScript, and Node.js.
+
+SKILLS
+Frontend: React, TypeScript, JavaScript, HTML, CSS, Tailwind CSS
+Backend: Node.js, Express, REST API
+Databases & Tools: MongoDB, Docker, Git, Next.js
+
+EXPERIENCE
+Full Stack Engineer - BrightWave Interactive (2022 - Present)
+- Developed responsive user interfaces and modular component libraries using React and TypeScript.
+- Built and maintained scalable backend REST APIs using Node.js and Express.
+- Designed database schemas and managed document storage using MongoDB.
+
+Junior Web Developer - PixelCraft Studio (2020 - 2022)
+- Created responsive web layouts and styled landing pages using HTML, CSS, and Tailwind CSS.
+- Integrated third-party REST API endpoints with frontend client applications.
+- Collaborated in code reviews using Git and GitHub workflows.
+
+EDUCATION
+B.S. in Information Technology - Georgia Tech (2016 - 2020)
+
+PROJECTS
+DevPortal Dashboard
+- Built a full-stack developer productivity dashboard using React, Next.js, and Node.js.
+- Integrated authentication and real-time state management.
+
+CERTIFICATIONS
+Meta Certified Frontend Developer

@@ -1,0 +1,21 @@
+Senior Backend Engineer
+
+About the Role:
+We are looking for a Senior Backend Engineer to design, scale, and maintain our high-performance cloud APIs and data systems.
+
+Responsibilities:
+- Architect and develop scalable REST APIs and microservices using Python.
+- Optimize database performance, indexing, and schemas in PostgreSQL.
+- Containerize and deploy services using Docker in cloud environments.
+- Collaborate with engineering teams to define architectural standards and best practices.
+
+Requirements:
+- Strong proficiency in Python, FastAPI, and PostgreSQL.
+- Hands-on experience building microservices and REST API systems.
+- Experience with Docker and Linux system administration.
+- Solid understanding of Git version control workflows.
+
+Preferred Qualifications:
+- Experience with AWS cloud infrastructure and Kubernetes.
+- Knowledge of Redis caching and distributed data structures.
+- Familiarity with GraphQL APIs and CI/CD pipelines.

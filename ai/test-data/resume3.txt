@@ -1,0 +1,26 @@
+Jordan Lee
+jordan.lee@email.com
+Boston, MA | github.com/jordanlee
+
+SUMMARY
+Motivated entry-level software engineer with a strong foundation in computer science, eager to contribute to cloud and backend systems.
+
+SKILLS
+Python, SQL, Docker, Kubernetes, AWS, PostgreSQL, React, Java, Git
+
+EXPERIENCE
+Software Engineering Intern - Apex Innovations (2023 - 2024)
+- Wrote Python automation scripts for scheduled data extraction and log parsing.
+- Formulated basic SQL queries to assist senior engineers with performance reporting.
+- Participated in weekly agile standups and maintained code documentation.
+
+EDUCATION
+B.S. in Software Engineering - Boston University (2020 - 2024)
+
+PROJECTS
+Student Grade Tracker
+- Built a command-line student records management utility in Python using standard libraries.
+- Implemented file storage and simple calculation algorithms.
+
+CERTIFICATIONS
+CompTIA Security+

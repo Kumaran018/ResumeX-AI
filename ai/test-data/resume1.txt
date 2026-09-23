@@ -1,0 +1,33 @@
+Alex Chen
+alex.chen@email.com
+Seattle, WA | linkedin.com/in/alexchen
+
+SUMMARY
+Experienced Backend Engineer specializing in Python microservices, distributed systems, and scalable cloud architecture.
+
+SKILLS
+Languages: Python, SQL, Go
+Frameworks & Libraries: FastAPI, Flask, Redis
+Databases & Cloud: PostgreSQL, Docker, AWS, Linux, Git
+
+EXPERIENCE
+Senior Software Engineer - CloudScale Systems (2021 - Present)
+- Architected high-throughput REST APIs and microservices using Python and FastAPI.
+- Designed and optimized relational databases using PostgreSQL, reducing query latency by 35%.
+- Containerized microservices using Docker and managed deployments across Linux environments.
+
+Software Developer - DataCore Solutions (2018 - 2021)
+- Developed backend data ingestion pipelines and RESTful web services in Python.
+- Maintained database integrity with SQL queries and automated schema migrations.
+- Utilized Git for version control and collaborated in agile sprint planning.
+
+EDUCATION
+B.S. in Computer Science - University of Washington (2014 - 2018)
+
+PROJECTS
+Distributed Task Queue
+- Built an asynchronous background worker system using Python and Redis for task scheduling.
+- Implemented automated health check endpoints and structured logging.
+
+CERTIFICATIONS
+AWS Certified Solutions Architect

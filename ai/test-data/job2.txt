@@ -1,0 +1,21 @@
+Full Stack Developer
+
+About the Role:
+We are seeking a talented Full Stack Developer to build modern, responsive web applications and scalable backend services.
+
+Responsibilities:
+- Build dynamic, responsive web interfaces using React and TypeScript.
+- Design and implement robust backend REST API services in Node.js and Express.
+- Model data schemas and manage database storage with MongoDB.
+- Write maintainable, well-tested code and participate in code reviews.
+
+Requirements:
+- Strong proficiency in JavaScript, TypeScript, and React.
+- Solid backend development experience with Node.js and Express.
+- Hands-on experience with MongoDB and REST API architecture.
+- Proficient in modern CSS, HTML, and Tailwind CSS.
+
+Preferred Qualifications:
+- Experience with Next.js web application framework.
+- Familiarity with Docker containerization and AWS cloud hosting.
+- Experience with GraphQL APIs and automated testing.
