@@ -1,0 +1,36 @@
+{
+  "name": "resumex-ai",
+  "version": "1.0.0",
+  "description": "An AI-powered full-stack platform for evidence-based resume analysis, job matching, skill-gap detection, recruiter review, and interview preparation.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Kumaran018/ResumeX-AI.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Kumaran018/ResumeX-AI/issues"
+  },
+  "homepage": "https://github.com/Kumaran018/ResumeX-AI#readme",
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "cors": "^2.8.6",
+    "dotenv": "^18.0.2",
+    "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "^9.10.1",
+    "multer": "^2.4.0",
+    "pdf-parse": "^2.4.5"
+  },
+  "devDependencies": {
+    "jest": "^30.5.2",
+    "nodemon": "^3.1.14",
+    "supertest": "^7.2.2"
+  }
+}
