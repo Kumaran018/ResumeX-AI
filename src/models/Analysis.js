@@ -28,7 +28,15 @@ const analysisSchema = new mongoose.Schema(
       required: [true, 'Analysis feedback is required.']
     },
     missingSkills: [String],
-    matchingSkills: [String]
+    matchingSkills: [String],
+    
+    // New AI Feature Fields
+    weakEvidence: [String],
+    keywordAnalysis: mongoose.Schema.Types.Mixed,
+    formatting: mongoose.Schema.Types.Mixed,
+    improvements: [mongoose.Schema.Types.Mixed],
+    hrReview: mongoose.Schema.Types.Mixed,
+    interviewQuestions: [mongoose.Schema.Types.Mixed]
   },
   { timestamps: true }
 );

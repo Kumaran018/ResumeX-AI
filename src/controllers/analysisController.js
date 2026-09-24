@@ -32,6 +32,12 @@ exports.analyze = async (req, res, next) => {
       analysis.feedback = aiResult.feedback;
       analysis.missingSkills = aiResult.missingSkills;
       analysis.matchingSkills = aiResult.matchingSkills;
+      analysis.weakEvidence = aiResult.weakEvidence;
+      analysis.keywordAnalysis = aiResult.keywordAnalysis;
+      analysis.formatting = aiResult.formatting;
+      analysis.improvements = aiResult.improvements;
+      analysis.hrReview = aiResult.hrReview;
+      analysis.interviewQuestions = aiResult.interviewQuestions;
       await analysis.save();
     } else {
       analysis = await Analysis.create({
@@ -41,7 +47,13 @@ exports.analyze = async (req, res, next) => {
         score: aiResult.score,
         feedback: aiResult.feedback,
         missingSkills: aiResult.missingSkills,
-        matchingSkills: aiResult.matchingSkills
+        matchingSkills: aiResult.matchingSkills,
+        weakEvidence: aiResult.weakEvidence,
+        keywordAnalysis: aiResult.keywordAnalysis,
+        formatting: aiResult.formatting,
+        improvements: aiResult.improvements,
+        hrReview: aiResult.hrReview,
+        interviewQuestions: aiResult.interviewQuestions
       });
     }
 

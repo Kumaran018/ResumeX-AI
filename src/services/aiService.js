@@ -1,20 +1,38 @@
-// MOCK AI SERVICE
-// This is structurally sound but outputs mock data.
-// Replace with actual LLM calls (e.g., via LangChain or direct OpenAI/Gemini SDKs) in the future.
-
 const analyzeResumeAgainstJob = async (resumeText, jobDescriptionText) => {
-  // Simulate network latency
-  await new Promise((resolve) => setTimeout(resolve, 1000));
+  const pythonApiUrl = process.env.PYTHON_AI_API_URL || "http://127.0.0.1:8000/api/analyze";
+  
+  try {
+    const response = await fetch(pythonApiUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ resumeText, jobDescriptionText }),
+    });
 
-  // Determine mock score between 50 and 99
-  const score = Math.floor(Math.random() * 50) + 50;
+    if (!response.ok) {
+      const errText = await response.text();
+      throw new Error(`Python AI service returned status: ${response.status} - ${errText}`);
+    }
 
-  return {
-    score,
-    feedback: "[MOCK DATA] The candidate shows a solid foundation. Some skills match well with the job description, although advanced toolsets mentioned in the job description appear to be missing from the resume text.",
-    missingSkills: ["React Native", "GraphQL", "AWS"],  // Mocked missing skills
-    matchingSkills: ["JavaScript", "Node.js", "Express"] // Mocked matching skills
-  };
+    const aiResult = await response.json();
+
+    // Map properties and return new and backwards compatible fields
+    return {
+      score: aiResult.matchScore || 0,
+      feedback: aiResult.hrReview?.recommendation || aiResult.hrReview?.feedback || "Review completed.",
+      missingSkills: aiResult.missingSkills || [],
+      matchingSkills: aiResult.strongSkills || aiResult.matchingSkills || [],
+      
+      weakEvidence: aiResult.weakEvidence || [],
+      keywordAnalysis: aiResult.keywordAnalysis || {},
+      formatting: aiResult.formatting || {},
+      improvements: aiResult.improvements || [],
+      hrReview: aiResult.hrReview || {},
+      interviewQuestions: aiResult.interviewQuestions || []
+    };
+  } catch (error) {
+    console.error("AI Service Integration Error:", error.message);
+    throw new Error("Failed to reach Python AI service. Please ensure it is running.");
+  }
 };
 
 module.exports = { analyzeResumeAgainstJob };
