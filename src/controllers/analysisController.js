@@ -3,7 +3,6 @@ const Resume = require('../models/Resume');
 const JobDescription = require('../models/JobDescription');
 const { analyzeResumeAgainstJob } = require('../services/aiService');
 const { AppError, sendResponse } = require('../utils/errors');
-
 const AnalysisHistory = require('../models/AnalysisHistory');
 
 exports.analyze = async (req, res, next) => {
@@ -14,20 +13,41 @@ exports.analyze = async (req, res, next) => {
       return next(new AppError('Please provide both resumeId and jobId', 400));
     }
 
-    const resume = await Resume.findOne({ _id: resumeId, user: req.user.id });
-    const job = await JobDescription.findOne({ _id: jobId, user: req.user.id });
+    const resume = await Resume.findOne({
+      _id: resumeId,
+      user: req.user.id
+    });
 
-    if (!resume) return next(new AppError('Resume not found', 404));
-    if (!job) return next(new AppError('Job Description not found', 404));
+    const job = await JobDescription.findOne({
+      _id: jobId,
+      user: req.user.id
+    });
 
-    // Call Mock AI Service
-    const aiResult = await analyzeResumeAgainstJob(resume.extractedText, job.description);
+    if (!resume) {
+      return next(new AppError('Resume not found', 404));
+    }
 
-    let analysis = await Analysis.findOne({ user: req.user.id, resume: resume._id, job: job._id });
+    if (!job) {
+      return next(new AppError('Job Description not found', 404));
+    }
+
+    // Call AI service
+    const aiResult = await analyzeResumeAgainstJob(
+      resume.extractedText,
+      job.description
+    );
+
+    let analysis = await Analysis.findOne({
+      user: req.user.id,
+      resume: resume._id,
+      job: job._id
+    });
+
     let previousScore = null;
 
     if (analysis) {
       previousScore = analysis.score;
+
       analysis.score = aiResult.score;
       analysis.feedback = aiResult.feedback;
       analysis.missingSkills = aiResult.missingSkills;
@@ -38,6 +58,8 @@ exports.analyze = async (req, res, next) => {
       analysis.improvements = aiResult.improvements;
       analysis.hrReview = aiResult.hrReview;
       analysis.interviewQuestions = aiResult.interviewQuestions;
+      analysis.interviewPreparation = aiResult.interviewPreparation;
+
       await analysis.save();
     } else {
       analysis = await Analysis.create({
@@ -53,11 +75,12 @@ exports.analyze = async (req, res, next) => {
         formatting: aiResult.formatting,
         improvements: aiResult.improvements,
         hrReview: aiResult.hrReview,
-        interviewQuestions: aiResult.interviewQuestions
+        interviewQuestions: aiResult.interviewQuestions,
+        interviewPreparation: aiResult.interviewPreparation
       });
     }
 
-    // Persist History
+    // Persist analysis history
     await AnalysisHistory.create({
       user: req.user.id,
       analysis: analysis._id,
@@ -73,16 +96,21 @@ exports.analyze = async (req, res, next) => {
 
 exports.getAllAnalyses = async (req, res, next) => {
   try {
-    // Basic pagination (page & limit)
     const page = parseInt(req.query.page, 10) || 1;
     const limit = parseInt(req.query.limit, 10) || 10;
     const skip = (page - 1) * limit;
 
-    const query = { user: req.user.id };
+    const query = {
+      user: req.user.id
+    };
 
-    // Allows filtering by resume or job from query params if needed
-    if (req.query.resumeId) query.resume = req.query.resumeId;
-    if (req.query.jobId) query.job = req.query.jobId;
+    if (req.query.resumeId) {
+      query.resume = req.query.resumeId;
+    }
+
+    if (req.query.jobId) {
+      query.job = req.query.jobId;
+    }
 
     const analyses = await Analysis.find(query)
       .populate('resume', 'title')
@@ -90,7 +118,7 @@ exports.getAllAnalyses = async (req, res, next) => {
       .skip(skip)
       .limit(limit)
       .sort('-createdAt');
-      
+
     const total = await Analysis.countDocuments(query);
 
     res.status(200).json({
@@ -101,7 +129,9 @@ exports.getAllAnalyses = async (req, res, next) => {
         page,
         pages: Math.ceil(total / limit)
       },
-      data: { analyses }
+      data: {
+        analyses
+      }
     });
   } catch (err) {
     next(err);
@@ -110,14 +140,17 @@ exports.getAllAnalyses = async (req, res, next) => {
 
 exports.getAnalysis = async (req, res, next) => {
   try {
-    const analysis = await Analysis.findOne({ _id: req.params.id, user: req.user.id })
+    const analysis = await Analysis.findOne({
+      _id: req.params.id,
+      user: req.user.id
+    })
       .populate('resume')
       .populate('job');
-      
+
     if (!analysis) {
       return next(new AppError('No analysis found with that ID', 404));
     }
-    
+
     sendResponse(res, 200, { analysis });
   } catch (err) {
     next(err);

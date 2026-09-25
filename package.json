@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/Kumaran018/ResumeX-AI#readme",
   "dependencies": {
+    "@google/genai": "^2.24.0",
     "bcryptjs": "^3.0.3",
     "cors": "^2.8.6",
     "dotenv": "^18.0.2",

@@ -31,12 +31,14 @@ const analysisSchema = new mongoose.Schema(
     matchingSkills: [String],
     
     // New AI Feature Fields
+        // New AI Feature Fields
     weakEvidence: [String],
     keywordAnalysis: mongoose.Schema.Types.Mixed,
     formatting: mongoose.Schema.Types.Mixed,
     improvements: [mongoose.Schema.Types.Mixed],
     hrReview: mongoose.Schema.Types.Mixed,
-    interviewQuestions: [mongoose.Schema.Types.Mixed]
+    interviewQuestions: [mongoose.Schema.Types.Mixed],
+    interviewPreparation: [String]
   },
   { timestamps: true }
 );

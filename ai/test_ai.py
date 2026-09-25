@@ -193,7 +193,7 @@ def test_ai() -> None:
     print("=" * 60)
     for idx, q in enumerate(questions, start=1):
         print(f"{idx}. [{q['category']}] {q['question']}")
-        print(f"   Context: {q['context']}")
+        print(f"   Guidance: {q['guidance']}")
 
     # 8. STEP 11: Final Consistent JSON Structure
     final_json = generate_final_json(resume_data, job_data)
@@ -275,6 +275,10 @@ def test_combinations() -> None:
         resume_path = os.path.join(test_data_dir, resume_file)
         job_path = os.path.join(test_data_dir, job_file)
 
+        if not os.path.exists(resume_path) or not os.path.exists(job_path):
+            print(f"Skipping {resume_file} + {job_file} (files not found)")
+            continue
+
         with open(resume_path, "r", encoding="utf-8") as rf:
             resume_text = rf.read()
 
@@ -346,6 +350,10 @@ def test_pdf_resumes() -> None:
 
         print(f"\n[{idx}/3] TESTING PDF RESUME: {pdf_file} with {job_file}")
         print("-" * 60)
+
+        if not os.path.exists(pdf_path) or not os.path.exists(job_path):
+            print(f"Skipping PDF {pdf_file} (files not found)")
+            continue
 
         # 1. Extract text from PDF
         extracted_text = extractor.extract(pdf_path)
@@ -512,9 +520,9 @@ def test_three_features() -> None:
     for q in questions:
         assert "category" in q, "Question must have a 'category'"
         assert "question" in q, "Question must have a 'question' text"
-        assert "context" in q, "Question must have a 'context' explanation"
+        assert "guidance" in q, "Question must have a 'guidance' explanation"
         assert len(q["question"]) > 10, "Question text should be substantive"
-        assert len(q["context"]) > 10, "Context explanation should be substantive"
+        assert len(q["guidance"]) > 10, "Context explanation should be substantive"
 
     categories = [q["category"] for q in questions]
     assert "Technical Deep Dive" in categories, "Must include Technical Deep Dive category"
