@@ -1,0 +1,97 @@
+.profile-page {
+  animation: fadeIn 0.3s ease;
+}
+
+.profile-content-card {
+  background-color: var(--dash-card-bg);
+  border: 1px solid var(--dash-border);
+  border-radius: 12px;
+  padding: 32px;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.02);
+  max-width: 800px;
+}
+
+.profile-form {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.form-section {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-section-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--dash-text-primary);
+  border-bottom: 1px solid var(--dash-border);
+  padding-bottom: 12px;
+  margin: 0;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-group.full-width {
+  grid-column: 1 / -1;
+}
+
+.form-group label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--dash-text-secondary);
+}
+
+.form-group input,
+.form-group textarea {
+  padding: 12px 16px;
+  border: 1px solid var(--dash-border);
+  border-radius: 8px;
+  font-size: 14px;
+  background-color: var(--dash-bg-main);
+  color: var(--dash-text-primary);
+  font-family: inherit;
+  transition: all 0.2s ease;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: var(--dash-accent-teal);
+  box-shadow: 0 0 0 2px var(--dash-bg-teal-light);
+  background-color: var(--dash-card-bg);
+}
+
+.form-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 16px;
+  padding-top: 24px;
+  border-top: 1px solid var(--dash-border);
+}
+
+.save-success {
+  color: #10B981;
+  font-size: 13px;
+  font-weight: 500;
+  animation: fadeIn 0.3s ease;
+}
+
+@media (max-width: 640px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+}
