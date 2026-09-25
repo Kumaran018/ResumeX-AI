@@ -1,0 +1,23 @@
+class AppError extends Error {
+  constructor(message, statusCode) {
+    super(message);
+    this.statusCode = statusCode;
+    this.status = `${statusCode}`.startsWith('4') ? 'fail' : 'error';
+    this.isOperational = true;
+
+    Error.captureStackTrace(this, this.constructor);
+  }
+}
+
+const sendResponse = (res, statusCode, data, message = '') => {
+  res.status(statusCode).json({
+    status: 'success',
+    message,
+    data
+  });
+};
+
+module.exports = {
+  AppError,
+  sendResponse
+};

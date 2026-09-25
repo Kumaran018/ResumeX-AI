@@ -1,8 +1,17 @@
 {
   "name": "resumex-ai",
+  "version": "1.0.0",
   "private": true,
-  "version": "0.1.0",
   "type": "module",
+  "description": "An AI-powered full-stack platform for evidence-based resume analysis, job matching, skill-gap detection, recruiter review, and interview preparation.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Kumaran018/ResumeX-AI.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Kumaran018/ResumeX-AI/issues"
+  },
+  "homepage": "https://github.com/Kumaran018/ResumeX-AI#readme",
   "scripts": {
     "dev": "vite",
     "build": "vite build",

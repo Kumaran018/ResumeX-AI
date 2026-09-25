@@ -147,3 +147,10 @@ vite.config.ts.timestamp-*
 
 # Build artifacts
 build/
+
+# Python and Virtual Environments
+pycache/
+__pycache__/
+*.pyc
+.venv/
+venv/
