@@ -1,0 +1,259 @@
+/* ResumeX AI — Bespoke Human-Designed Design System */
+
+:root {
+  /* Warm Color Palette */
+  --color-bg-main: #FAF8F5;
+  --color-bg-card: #FFFFFF;
+  --color-bg-subtle: #F3EFE9;
+  --color-bg-accent-soft: #FBF0ED;
+  --color-bg-teal-soft: #EEF7F5;
+  
+  /* Text & Inks */
+  --color-text-primary: #121826;
+  --color-text-secondary: #475569;
+  --color-text-muted: #64748B;
+  --color-text-light: #94A3B8;
+
+  /* Accents */
+  --color-accent-coral: #D95338;
+  --color-accent-coral-hover: #C5442A;
+  --color-accent-coral-subtle: rgba(217, 83, 56, 0.12);
+  --color-accent-teal: #247A6B;
+  --color-accent-teal-subtle: rgba(36, 122, 107, 0.12);
+
+  /* Borders & Dividers */
+  --color-border-subtle: #E8E2D8;
+  --color-border-focus: #D95338;
+  --color-border-light: #F0ECE4;
+
+  /* Status Colors */
+  --color-success-bg: #EDF7F2;
+  --color-success-border: #B7E4CD;
+  --color-success-text: #196D45;
+  
+  --color-warning-bg: #FEF8EC;
+  --color-warning-border: #FCE1AC;
+  --color-warning-text: #96600E;
+
+  --color-missing-bg: #FDF2F0;
+  --color-missing-border: #F9CBC3;
+  --color-missing-text: #B43826;
+
+  /* Typography */
+  --font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-heading: 'Outfit', 'Plus Jakarta Sans', sans-serif;
+
+  /* Layout & Shadows */
+  --max-width: 1200px;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+  --radius-full: 9999px;
+
+  --shadow-xs: 0 1px 2px rgba(26, 20, 15, 0.04);
+  --shadow-sm: 0 2px 8px rgba(26, 20, 15, 0.05);
+  --shadow-md: 0 8px 24px rgba(26, 20, 15, 0.06), 0 2px 6px rgba(26, 20, 15, 0.03);
+  --shadow-lg: 0 16px 36px rgba(26, 20, 15, 0.08), 0 4px 12px rgba(26, 20, 15, 0.04);
+
+  /* Transitions */
+  --transition-fast: 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-normal: 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Reset & Base */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-size: 16px;
+}
+
+body {
+  font-family: var(--font-family);
+  background-color: var(--color-bg-main);
+  color: var(--color-text-primary);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* Organic Warm Background Pattern */
+.bg-warm-pattern {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.bg-warm-shape-1 {
+  position: absolute;
+  top: -120px;
+  right: -80px;
+  width: 650px;
+  height: 650px;
+  border-radius: 58% 42% 48% 52% / 45% 55% 45% 55%;
+  background: radial-gradient(circle, rgba(217, 83, 56, 0.045) 0%, rgba(250, 248, 245, 0) 70%);
+}
+
+.bg-warm-shape-2 {
+  position: absolute;
+  top: 380px;
+  left: -150px;
+  width: 600px;
+  height: 600px;
+  border-radius: 42% 58% 55% 45% / 52% 48% 52% 48%;
+  background: radial-gradient(circle, rgba(36, 122, 107, 0.04) 0%, rgba(250, 248, 245, 0) 70%);
+}
+
+.container {
+  width: 100%;
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 24px;
+  position: relative;
+  z-index: 1;
+}
+
+/* Typography Utilities */
+h1, h2, h3, h4 {
+  font-family: var(--font-heading);
+  color: var(--color-text-primary);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+
+.accent-text {
+  color: var(--color-accent-coral);
+  display: inline;
+}
+
+.teal-text {
+  color: var(--color-accent-teal);
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: var(--font-family);
+  font-size: 0.95rem;
+  font-weight: 600;
+  padding: 12px 24px;
+  border-radius: var(--radius-md);
+  text-decoration: none;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  border: 1px solid transparent;
+  line-height: 1;
+}
+
+.btn-primary {
+  background-color: var(--color-accent-coral);
+  color: #FFFFFF;
+  border-color: var(--color-accent-coral);
+  box-shadow: 0 2px 6px rgba(217, 83, 56, 0.25);
+}
+
+.btn-primary:hover {
+  background-color: var(--color-accent-coral-hover);
+  border-color: var(--color-accent-coral-hover);
+  box-shadow: 0 4px 12px rgba(217, 83, 56, 0.35);
+  transform: translateY(-1px);
+}
+
+.btn-secondary {
+  background-color: #FFFFFF;
+  color: var(--color-text-primary);
+  border-color: var(--color-border-subtle);
+  box-shadow: var(--shadow-xs);
+}
+
+.btn-secondary:hover {
+  background-color: var(--color-bg-subtle);
+  border-color: #D6CEC3;
+  color: var(--color-text-primary);
+  transform: translateY(-1px);
+}
+
+.btn-sm {
+  padding: 9px 18px;
+  font-size: 0.88rem;
+}
+
+.btn-lg {
+  padding: 14px 28px;
+  font-size: 1.02rem;
+}
+
+/* Eyebrow badge */
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-accent-coral);
+  background-color: var(--color-bg-accent-soft);
+  border: 1px solid rgba(217, 83, 56, 0.15);
+  padding: 6px 14px;
+  border-radius: var(--radius-full);
+  margin-bottom: 20px;
+}
+
+.eyebrow-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: var(--color-accent-coral);
+}
+
+/* Section Common Styles */
+.section-padding {
+  padding: 100px 0;
+  position: relative;
+}
+
+.section-header {
+  text-align: center;
+  max-width: 680px;
+  margin: 0 auto 56px auto;
+}
+
+.section-title {
+  font-size: 2.35rem;
+  font-weight: 700;
+  margin-bottom: 16px;
+  color: var(--color-text-primary);
+}
+
+.section-desc {
+  font-size: 1.08rem;
+  color: var(--color-text-secondary);
+  line-height: 1.65;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .section-padding {
+    padding: 70px 0;
+  }
+  
+  .section-title {
+    font-size: 1.85rem;
+  }
+}

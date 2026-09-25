@@ -1,0 +1,142 @@
+/* Differentiator Section Styles */
+.differentiator-section {
+  background-color: #F6F3EE;
+  border-top: 1px solid var(--color-border-subtle);
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+
+.diff-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+  max-width: 960px;
+  margin: 0 auto;
+  align-items: stretch;
+}
+
+.diff-card {
+  background-color: #FFFFFF;
+  border-radius: var(--radius-lg);
+  padding: 36px 32px;
+  border: 1px solid var(--color-border-subtle);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  transition: all var(--transition-normal);
+}
+
+.diff-card.traditional {
+  background-color: #FAF8F5;
+  border-color: #E2DBD0;
+  opacity: 0.9;
+}
+
+.diff-card.resumex {
+  background-color: #FFFFFF;
+  border: 2px solid var(--color-accent-coral);
+  box-shadow: var(--shadow-md);
+}
+
+.diff-card-badge {
+  position: absolute;
+  top: -14px;
+  right: 28px;
+  background-color: var(--color-accent-coral);
+  color: #FFFFFF;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 4px 12px;
+  border-radius: var(--radius-full);
+  box-shadow: 0 2px 6px rgba(217, 83, 56, 0.3);
+}
+
+.diff-header {
+  margin-bottom: 24px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--color-border-light);
+}
+
+.diff-category {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  margin-bottom: 4px;
+}
+
+.diff-card.resumex .diff-category {
+  color: var(--color-accent-coral);
+}
+
+.diff-title {
+  font-size: 1.45rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.diff-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  flex-grow: 1;
+}
+
+.diff-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  font-size: 0.98rem;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+}
+
+.diff-check-icon {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.diff-card.traditional .diff-check-icon {
+  background-color: #E6E1D7;
+  color: #556070;
+}
+
+.diff-card.resumex .diff-check-icon {
+  background-color: var(--color-bg-accent-soft);
+  color: var(--color-accent-coral);
+}
+
+.diff-item-dimmed {
+  opacity: 0.45;
+  text-decoration: line-through;
+  color: var(--color-text-muted);
+}
+
+.diff-footnote {
+  margin-top: 28px;
+  padding-top: 18px;
+  border-top: 1px dashed var(--color-border-subtle);
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  line-height: 1.5;
+}
+
+@media (max-width: 768px) {
+  .diff-grid {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+
+  .diff-card {
+    padding: 28px 24px;
+  }
+}
