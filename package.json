@@ -2,7 +2,6 @@
   "name": "resumex-ai",
   "version": "1.0.0",
   "private": true,
-  "type": "module",
   "description": "An AI-powered full-stack platform for evidence-based resume analysis, job matching, skill-gap detection, recruiter review, and interview preparation.",
   "repository": {
     "type": "git",
