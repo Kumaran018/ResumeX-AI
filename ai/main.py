@@ -20,3 +20,7 @@ def analyze(req: AnalyzeRequest) -> Dict[str, Any]:
         return result
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/health")
+def health() -> Dict[str, str]:
+    return {"status": "healthy"}

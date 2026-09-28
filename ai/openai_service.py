@@ -20,75 +20,62 @@ def get_openai_insights(
     job_data: Dict[str, Any]
 ) -> Dict[str, Any]:
     """
-    Calls OpenAI to generate resume improvements, HR review, and interview questions.
+    Calls Gemini (via OpenAI SDK) to generate resume improvements, HR review, and interview questions.
     """
-    api_key = os.environ.get("OPENAI_API_KEY")
-    model_name = os.environ.get("OPENAI_MODEL", "gpt-4o")
+    api_key = os.environ.get("GEMINI_API_KEY")
+    model_name = "gemini-3.8-flash"
 
     # Fallback to error format if missing API key
     if not api_key:
-        logger.error("missing OpenAI API key")
+        logger.error("missing Gemini API key")
         return _fallback_response(resume_data, job_data, match_result, reason="missing_api_key")
 
     try:
         from openai import OpenAI, APIError, APITimeoutError, RateLimitError
-        client = OpenAI(api_key=api_key)
+        client = OpenAI(
+            api_key=api_key,
+            base_url="https://generativelanguage.googleapis.com/v1beta/openai/",
+            max_retries=0
+        )
         
         system_instruction = (
-            "You are an experienced technical recruiter and resume analyst.\n"
-            "Analyze the candidate resume against the target job description.\n"
-            "Use ONLY the supplied resume and job information.\n"
-            "Do not invent experience, certifications, projects, skills, employers, achievements, or qualifications.\n"
-            "Generate three outputs:\n"
-            "1. Resume improvement recommendations\n"
-            "2. Recruiter/HR evaluation\n"
-            "3. Personalized technical and behavioral interview questions\n"
-            "The recommendations must be specific to the candidate and target role.\n"
-            "Interview questions must be based on:\n"
-            "- demonstrated skills\n"
-            "- weak evidence\n"
-            "- missing job requirements\n"
-            "- projects actually present in the resume\n"
-            "Return valid JSON only."
+            "You are a technical recruiter. Analyze the resume against the job description.\n"
+            "Keep output concise. Return valid JSON only with exactly three keys: 'improvements', 'hrReview', and 'interviewQuestions'."
         )
 
         prompt = (
             "Based on the following data, generate JSON containing exactly three keys: 'improvements', 'hrReview', and 'interviewQuestions'.\n"
             "The JSON must strictly match this structure:\n"
             "{\n"
-            '  "improvements": [\n'
-            '    "specific recommendation 1",\n'
-            '    "specific recommendation 2"\n'
-            "  ],\n"
+            '  "improvements": ["maximum 5 specific recommendations"],\n'
             '  "hrReview": {\n'
-            '    "summary": "...",\n'
-            '    "strengths": [\n'
-            '      "..."\n'
-            '    ],\n'
-            '    "concerns": [\n'
-            '      "..."\n'
-            '    ],\n'
+            '    "summary": "concise summary",\n'
+            '    "strengths": ["..."],\n'
+            '    "concerns": ["..."],\n'
             '    "recommendation": "..."\n'
             "  },\n"
             '  "interviewQuestions": [\n'
             "    {\n"
-            '      "category": "Technical Deep Dive",\n'
+            '      "category": "...",\n'
             '      "question": "...",\n'
             '      "guidance": "..."\n'
             "    }\n"
             "  ]\n"
             "}\n\n"
-            "The matchScore MUST remain exactly the score provided below.\n\n"
-            f"Resume Text: {resume_text}\n\n"
-            f"Job Description Text: {job_description_text}\n\n"
-            f"Resume Data: {json.dumps(resume_data)}\n\n"
-            f"Job Data: {json.dumps(job_data)}\n\n"
-            f"Deterministic Match Results: {json.dumps(match_result)}"
+            "Generate maximum 5 improvements and maximum 5 interview questions.\n\n"
+            "RESUME:\n"
+            f"{resume_text}\n\n"
+            "JOB DESCRIPTION:\n"
+            f"{job_description_text}\n\n"
+            "DETERMINISTIC ANALYSIS:\n"
+            f"{json.dumps(match_result)}"
         )
 
         try:
-            print("[LLM] OpenAI request started")
+            print("[LLM] Gemini request started")
             
+            import time
+            llm_t0 = time.time()
             # EXACTLY ONE CALL
             response = client.chat.completions.create(
                 model=model_name,
@@ -97,29 +84,32 @@ def get_openai_insights(
                     {"role": "user", "content": prompt}
                 ],
                 response_format={"type": "json_object"},
-                timeout=20.0  # reasonable request timeout, no long retries
+                reasoning_effort="low",
+                max_tokens=700,
+                timeout=8
             )
+            llm_duration = int((time.time() - llm_t0) * 1000)
             
-            print("[LLM] OpenAI request succeeded")
+            print(f"[LLM] Gemini request completed: {llm_duration} ms")
             
             result = json.loads(response.choices[0].message.content)
             
             # Verify required keys
-            if "improvements" not in result or "hrReview" not in result or "interviewQuestions" not in result:
-                raise ValueError("Malformed OpenAI response: missing required keys")
+            required_keys = ["improvements", "hrReview", "interviewQuestions"]
+            for k in required_keys:
+                if k not in result:
+                    result[k] = [] if k in ["improvements", "interviewQuestions"] else {}
                 
             # Verify match score wasn't altered
             result["hrReview"]["matchScore"] = match_result.get("matchScore", 0)
             
-            print(f"[LLM] OpenAI-generated improvements: {'YES' if 'improvements' in result else 'NO'}")
-            print(f"[LLM] OpenAI-generated hrReview: {'YES' if 'hrReview' in result else 'NO'}")
-            print(f"[LLM] OpenAI-generated interviewQuestions: {'YES' if 'interviewQuestions' in result else 'NO'}")
+            print(f"[LLM] Gemini requests for this analysis: 1")
             
             result["llmMetadata"] = {
-                "provider": "OpenAI",
+                "provider": "Gemini",
                 "model": model_name,
                 "used": True,
-                "source": "openai"
+                "source": "gemini"
             }
             
             result["generatedFeatures"] = {
@@ -131,41 +121,45 @@ def get_openai_insights(
             return result
             
         except RateLimitError as e:
-            print(f"[LLM] OpenAI request failed: {str(e)}")
+            print("[LLM] Gemini quota exhausted")
+            print("[LLM] Using deterministic fallback")
             return _fallback_response(resume_data, job_data, match_result, reason="rate_limit_exceeded")
         except APITimeoutError as e:
-            print(f"[LLM] OpenAI request failed: {str(e)}")
+            print("[LLM] Gemini request timed out")
+            print("[LLM] Using deterministic fallback")
             return _fallback_response(resume_data, job_data, match_result, reason="timeout")
         except APIError as e:
-            print(f"[LLM] OpenAI request failed: {str(e)}")
-            return _fallback_response(resume_data, job_data, match_result, reason="openai_api_error")
+            print(f"[LLM] Gemini request failed: {str(e)}")
+            print("[LLM] Using deterministic fallback")
+            return _fallback_response(resume_data, job_data, match_result, reason="api_error")
         except Exception as e:
-            print(f"[LLM] OpenAI request failed: {str(e)}")
+            print(f"[LLM] Gemini request failed: {str(e)}")
+            print("[LLM] Using deterministic fallback")
             return _fallback_response(resume_data, job_data, match_result, reason="unexpected_error")
 
     except Exception as e:
-        print(f"[LLM] OpenAI request failed: {str(e)}")
-        return _fallback_response(resume_data, job_data, match_result, reason="openai_setup_failed")
+        print(f"[LLM] Gemini request failed: {str(e)}")
+        return _fallback_response(resume_data, job_data, match_result, reason="setup_failed")
 
-def _fallback_response(resume_data: Dict[str, Any], job_data: Dict[str, Any], match_result: Dict[str, Any], reason: str = "openai_api_error") -> Dict[str, Any]:
+def _fallback_response(resume_data: Dict[str, Any], job_data: Dict[str, Any], match_result: Dict[str, Any], reason: str = "api_error") -> Dict[str, Any]:
     from ai.resume_improver import ResumeImprover
     from ai.hr_reviewer import HRReviewer
     from ai.interview_generator import InterviewQuestionGenerator
     import os
     
     print("[LLM] LLM source: deterministic_fallback")
-    print("[LLM] OpenAI-generated improvements: NO")
-    print("[LLM] OpenAI-generated hrReview: NO")
-    print("[LLM] OpenAI-generated interviewQuestions: NO")
+    print("[LLM] Gemini-generated improvements: NO")
+    print("[LLM] Gemini-generated hrReview: NO")
+    print("[LLM] Gemini-generated interviewQuestions: NO")
     
-    model_name = os.environ.get("OPENAI_MODEL", "gpt-4o")
+    model_name = "gemini-3.8-flash"
     
     return {
         "improvements": ResumeImprover().generate(resume_data, job_data, match_result),
         "hrReview": HRReviewer().generate(resume_data, job_data, match_result),
         "interviewQuestions": InterviewQuestionGenerator().generate(resume_data, job_data, match_result),
         "llmMetadata": {
-            "provider": "OpenAI",
+            "provider": "Gemini",
             "model": model_name,
             "used": False,
             "source": "deterministic_fallback",

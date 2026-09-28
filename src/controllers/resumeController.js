@@ -1,8 +1,7 @@
-const Resume = require('../models/Resume');
+const { pool } = require('../config/db');
 const { extractTextFromPDF } = require('../services/pdfService');
 const { AppError, sendResponse } = require('../utils/errors');
 const fs = require('fs');
-const Analysis = require('../models/Analysis');
 
 exports.uploadResume = async (req, res, next) => {
   try {
@@ -16,14 +15,12 @@ exports.uploadResume = async (req, res, next) => {
 
     const extractedText = await extractTextFromPDF(req.file.path);
 
-    const newResume = await Resume.create({
-      user: req.user.id,
-      title: req.body.title,
-      filePath: req.file.path,
-      extractedText
-    });
+    const result = await pool.query(
+      'INSERT INTO resumes (user_id, title, file_path, extracted_text) VALUES ($1, $2, $3, $4) RETURNING *, id AS _id',
+      [req.user.id, req.body.title, req.file.path, extractedText]
+    );
 
-    sendResponse(res, 201, { resume: newResume }, 'Resume uploaded and processed successfully');
+    sendResponse(res, 201, { resume: result.rows[0] }, 'Resume uploaded and processed successfully');
   } catch (err) {
     if (req.file && fs.existsSync(req.file.path)) {
       try {
@@ -38,8 +35,8 @@ exports.uploadResume = async (req, res, next) => {
 
 exports.getAllResumes = async (req, res, next) => {
   try {
-    const resumes = await Resume.find({ user: req.user.id });
-    sendResponse(res, 200, { resumes });
+    const result = await pool.query('SELECT *, id AS _id FROM resumes WHERE user_id = $1', [req.user.id]);
+    sendResponse(res, 200, { resumes: result.rows });
   } catch (err) {
     next(err);
   }
@@ -47,7 +44,8 @@ exports.getAllResumes = async (req, res, next) => {
 
 exports.getResume = async (req, res, next) => {
   try {
-    const resume = await Resume.findOne({ _id: req.params.id, user: req.user.id });
+    const result = await pool.query('SELECT *, id AS _id FROM resumes WHERE id = $1 AND user_id = $2', [req.params.id, req.user.id]);
+    const resume = result.rows[0];
     if (!resume) {
       return next(new AppError('No resume found with that ID', 404));
     }
@@ -59,21 +57,16 @@ exports.getResume = async (req, res, next) => {
 
 exports.deleteResume = async (req, res, next) => {
   try {
-    const resume = await Resume.findOneAndDelete({ _id: req.params.id, user: req.user.id });
+    const result = await pool.query('DELETE FROM resumes WHERE id = $1 AND user_id = $2 RETURNING *', [req.params.id, req.user.id]);
+    const resume = result.rows[0];
     if (!resume) {
       return next(new AppError('No resume found with that ID', 404));
     }
 
     // Delete associated file
-    if (fs.existsSync(resume.filePath)) fs.unlinkSync(resume.filePath);
+    if (fs.existsSync(resume.file_path)) fs.unlinkSync(resume.file_path);
     
-    // Find all analyses referencing this resume to delete their history
-    const analyses = await Analysis.find({ resume: resume._id });
-    const analysisIds = analyses.map(a => a._id);
-    await require('../models/AnalysisHistory').deleteMany({ analysis: { $in: analysisIds } });
-
-    // Delete dependent analyses
-    await Analysis.deleteMany({ resume: resume._id });
+    // Note: Analysis and AnalysisHistory are automatically deleted via ON DELETE CASCADE in Postgres.
 
     res.status(204).json({
       status: 'success',

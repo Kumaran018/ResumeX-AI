@@ -148,3 +148,6 @@ __pycache__/
 *.pyc
 .venv/
 venv/
+
+# Uploads
+uploads/

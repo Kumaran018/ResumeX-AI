@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const User = require('../models/User');
+const { pool } = require('../config/db');
 const { AppError } = require('../utils/errors');
 
 const protect = async (req, res, next) => {
@@ -18,7 +18,8 @@ const protect = async (req, res, next) => {
     }
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const currentUser = await User.findById(decoded.id);
+    const result = await pool.query('SELECT *, id AS _id FROM users WHERE id = $1', [decoded.id]);
+    const currentUser = result.rows[0];
 
     if (!currentUser) {
       return next(new AppError('The user belonging to this token does no longer exist.', 401));
@@ -37,4 +38,12 @@ const protect = async (req, res, next) => {
   }
 };
 
-module.exports = { protect };
+const admin = (req, res, next) => {
+  if (req.user && req.user.role === 'admin') {
+    next();
+  } else {
+    return next(new AppError('You do not have permission to perform this action.', 403));
+  }
+};
+
+module.exports = { protect, admin };
