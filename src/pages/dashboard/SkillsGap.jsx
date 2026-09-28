@@ -30,26 +30,42 @@ export default function SkillsGap() {
     fetchData()
   }, [])
 
+  const [isTimeout, setIsTimeout] = useState(false)
+
   const handleAnalyze = async (e) => {
-    e.preventDefault()
+    if (e) e.preventDefault()
     if (!selectedResumeId || !selectedJobId) {
       setStatus('Please select both a resume and a job.')
       return
     }
+    if (isLoading) return; // Prevent duplicate requests
 
-    setStatus('')
+    setStatus('Identifying Skill Gaps...')
     setIsLoading(true)
     setAnalysisResult(null)
+    setIsTimeout(false)
+    console.log("[Skills Gap] Request started")
+
+    const controller = new AbortController()
+    const timeoutId = setTimeout(() => controller.abort(), 30000)
 
     try {
-      const res = await api.analyze({ resumeId: selectedResumeId, jobId: selectedJobId })
+      const res = await api.analyze({ resumeId: selectedResumeId, jobId: selectedJobId }, { signal: controller.signal })
+      clearTimeout(timeoutId)
       setStatus('Analysis complete!')
-      console.log('Skills Gap API Response:', res.data)
+      console.log("[Skills Gap] Request completed")
       if (res.data && res.data.analysis) {
         setAnalysisResult(res.data.analysis)
       }
     } catch (err) {
-      setStatus(`Error: ${err.message || 'Failed to process request.'}`)
+      clearTimeout(timeoutId)
+      console.log("[Skills Gap] Request failed")
+      if (err.name === 'AbortError') {
+        setIsTimeout(true)
+        setStatus('Analysis is taking longer than expected. Please try again.')
+      } else {
+        setStatus(`Error: ${err.message || 'Failed to process request.'}`)
+      }
     } finally {
       setIsLoading(false)
     }
@@ -99,9 +115,9 @@ export default function SkillsGap() {
               </div>
 
               <button type="submit" className="btn btn-primary" style={{ width: '100%' }} disabled={isLoading}>
-                {isLoading ? 'Analyzing Gaps...' : 'Analyze Skills Gap'}
+                {isLoading ? 'Identifying Skill Gaps...' : isTimeout ? 'Retry' : 'Analyze Skills Gap'}
               </button>
-              {status && <div style={{ marginTop: '15px', color: status.startsWith('Error') ? 'red' : 'green', fontWeight: 'bold' }}>{status}</div>}
+              {status && <div style={{ marginTop: '15px', color: status.startsWith('Error') || isTimeout ? 'red' : 'green', fontWeight: 'bold' }}>{status}</div>}
             </form>
           </div>
         ) : (

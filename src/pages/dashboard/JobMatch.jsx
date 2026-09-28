@@ -52,36 +52,44 @@ export default function JobMatch() {
     }
   }
 
-  const handleAnalyze = async (e) => {
-    e.preventDefault()
-    if (!selectedJob || !selectedResume) return;
-    setAnalysisStatus('Analyzing...')
-    setAnalysisResult(null)
-    
-    console.log("SELECTED JOB ID:", selectedJob);
-    console.log(
-      "SELECTED JOB:",
-      jobs.find(job => job._id === selectedJob)
-    );
+  const [isLoading, setIsLoading] = useState(false)
+  const [isTimeout, setIsTimeout] = useState(false)
 
-    console.log("ANALYZE REQUEST:", {
-      resumeId: selectedResume,
-      jobId: selectedJob
-    });
+  const handleAnalyze = async (e) => {
+    if (e) e.preventDefault()
+    if (!selectedJob || !selectedResume) return;
+    if (isLoading) return; // Prevent duplicate requests
+    
+    setIsLoading(true)
+    setAnalysisStatus('Analyzing Job Match...')
+    setAnalysisResult(null)
+    setIsTimeout(false)
+    console.log("[ATS & Job Match] Request started")
+
+    const controller = new AbortController()
+    const timeoutId = setTimeout(() => controller.abort(), 30000)
 
     try {
-      const res = await api.analyze({ resumeId: selectedResume, jobId: selectedJob })
+      const res = await api.analyze({ resumeId: selectedResume, jobId: selectedJob }, { signal: controller.signal })
+      clearTimeout(timeoutId)
       
-      console.log("ANALYZE API RESPONSE:", res);
-      console.log("REAL ANALYSIS RESPONSE:", JSON.stringify(res.data, null, 2));
-
+      console.log("[ATS & Job Match] Request completed")
       setAnalysisStatus('Analysis complete!')
       if (res.data && res.data.analysis) {
         setAnalysisResult(res.data.analysis)
       }
     } catch (err) {
-      console.error("ANALYSIS ERROR:", err);
-      setAnalysisStatus(`Error: ${err.message || 'Analysis failed. Please try again.'}`)
+      clearTimeout(timeoutId)
+      console.log("[ATS & Job Match] Request failed")
+      if (err.name === 'AbortError') {
+        setIsTimeout(true)
+        setAnalysisStatus('Analysis is taking longer than expected. Please try again.')
+      } else {
+        console.error("ANALYSIS ERROR:", err);
+        setAnalysisStatus(`Error: ${err.message || 'Analysis failed. Please try again.'}`)
+      }
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -165,10 +173,10 @@ export default function JobMatch() {
                   {jobs.map(j => <option key={j._id || j.id} value={j._id || j.id}>{j.title}</option>)}
                 </select>
               </div>
-              <button type="submit" className="btn btn-primary" style={{ width: '100%', backgroundColor: '#196D45', borderColor: '#196D45' }}>
-                Analyze Match
+              <button type="submit" className="btn btn-primary" style={{ width: '100%', backgroundColor: '#196D45', borderColor: '#196D45' }} disabled={isLoading}>
+                {isLoading ? 'Analyzing Job Match...' : isTimeout ? 'Retry' : 'Analyze Match'}
               </button>
-              {analysisStatus && <div style={{ marginTop: '15px', color: analysisStatus.startsWith('Error') ? 'red' : '#196D45', fontWeight: 'bold' }}>{analysisStatus}</div>}
+              {analysisStatus && <div style={{ marginTop: '15px', color: analysisStatus.startsWith('Error') || isTimeout ? 'red' : '#196D45', fontWeight: 'bold' }}>{analysisStatus}</div>}
             </form>
           </div>
         </div>

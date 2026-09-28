@@ -11,6 +11,7 @@ import SkillsGap from './pages/dashboard/SkillsGap'
 import ResumeImprovement from './pages/dashboard/ResumeImprovement'
 import InterviewPrep from './pages/dashboard/InterviewPrep'
 import Profile from './pages/dashboard/Profile'
+import AdminPanel from './pages/dashboard/AdminPanel'
 
 export default function App() {
   return (
@@ -19,6 +20,8 @@ export default function App() {
         <Route path="/" element={<Home />} />
         <Route path="/signin" element={<SignIn />} />
         <Route path="/signup" element={<SignUp />} />
+        
+        {/* User Dashboard Routes */}
         <Route path="/dashboard" element={<Dashboard />}>
           <Route index element={<DashboardHome />} />
           <Route path="resume-analyzer" element={<ResumeAnalyzer />} />
@@ -27,8 +30,10 @@ export default function App() {
           <Route path="resume-improvement" element={<ResumeImprovement />} />
           <Route path="interview" element={<InterviewPrep />} />
           <Route path="profile" element={<Profile />} />
+          <Route path="admin" element={<AdminPanel />} />
         </Route>
       </Routes>
     </Router>
   )
 }
+

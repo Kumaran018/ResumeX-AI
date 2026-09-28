@@ -30,26 +30,42 @@ export default function InterviewPrep() {
     fetchData()
   }, [])
 
+  const [isTimeout, setIsTimeout] = useState(false)
+
   const handlePrep = async (e) => {
-    e.preventDefault()
+    if (e) e.preventDefault()
     if (!selectedResumeId || !selectedJobId) {
       setStatus('Please select both a resume and a job.')
       return
     }
+    if (isLoading) return; // Prevent duplicate requests
 
-    setStatus('')
+    setStatus('Preparing Interview Questions...')
     setIsLoading(true)
     setAnalysisResult(null)
+    setIsTimeout(false)
+    console.log("[Interview Prep] Request started")
+
+    const controller = new AbortController()
+    const timeoutId = setTimeout(() => controller.abort(), 30000)
 
     try {
-      const res = await api.analyze({ resumeId: selectedResumeId, jobId: selectedJobId })
+      const res = await api.analyze({ resumeId: selectedResumeId, jobId: selectedJobId }, { signal: controller.signal })
+      clearTimeout(timeoutId)
       setStatus('Preparation context loaded!')
-      console.log('Interview Prep API Response:', res.data)
+      console.log("[Interview Prep] Request completed")
       if (res.data && res.data.analysis) {
         setAnalysisResult(res.data.analysis)
       }
     } catch (err) {
-      setStatus(`Error: ${err.message || 'Failed to process request.'}`)
+      clearTimeout(timeoutId)
+      console.log("[Interview Prep] Request failed")
+      if (err.name === 'AbortError') {
+        setIsTimeout(true)
+        setStatus('Analysis is taking longer than expected. Please try again.')
+      } else {
+        setStatus(`Error: ${err.message || 'Failed to process request.'}`)
+      }
     } finally {
       setIsLoading(false)
     }
@@ -99,9 +115,9 @@ export default function InterviewPrep() {
               </div>
 
               <button type="submit" className="btn btn-primary" style={{ width: '100%' }} disabled={isLoading}>
-                {isLoading ? 'Loading Preparation Context...' : 'Start Interview Prep'}
+                {isLoading ? 'Preparing Interview Questions...' : isTimeout ? 'Retry' : 'Start Interview Prep'}
               </button>
-              {status && <div style={{ marginTop: '15px', color: status.startsWith('Error') ? 'red' : 'green', fontWeight: 'bold' }}>{status}</div>}
+              {status && <div style={{ marginTop: '15px', color: status.startsWith('Error') || isTimeout ? 'red' : 'green', fontWeight: 'bold' }}>{status}</div>}
             </form>
           </div>
         ) : (

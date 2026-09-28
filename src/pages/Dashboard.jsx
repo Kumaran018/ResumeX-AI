@@ -8,6 +8,7 @@ import './Dashboard.css'
 export default function Dashboard() {
   const navigate = useNavigate()
   const [userName, setUserName] = useState('')
+  const [userRole, setUserRole] = useState('')
 
   useEffect(() => {
     const fetchUser = () => {
@@ -17,6 +18,9 @@ export default function Dashboard() {
           const user = JSON.parse(userStr)
           if (user && user.name) {
             setUserName(user.name)
+          }
+          if (user && user.role) {
+            setUserRole(user.role)
           }
         } catch (e) {
           // ignore
@@ -92,6 +96,21 @@ export default function Dashboard() {
                 <span>{link.name}</span>
               </NavLink>
             ))}
+            
+            {userRole === 'admin' && (
+              <div style={{ marginTop: '20px', paddingTop: '10px', borderTop: '1px solid rgba(0,0,0,0.1)' }}>
+                <div style={{ padding: '0 20px', fontSize: '11px', fontWeight: 'bold', color: '#718096', textTransform: 'uppercase', marginBottom: '5px' }}>ADMIN</div>
+                <NavLink
+                  to="/dashboard/admin"
+                  className={({ isActive }) => 
+                    isActive ? "dashboard-nav-link active" : "dashboard-nav-link"
+                  }
+                >
+                  <ShieldCheck size={18} />
+                  <span>Admin Access</span>
+                </NavLink>
+              </div>
+            )}
           </nav>
 
           <div className="dashboard-sidebar-footer">
