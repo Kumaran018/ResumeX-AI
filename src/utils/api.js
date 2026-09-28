@@ -1,4 +1,4 @@
-const BASE_URL = 'http://localhost:5000/api';
+const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
 /**
  * Helper to handle fetch requests with auth token
@@ -24,7 +24,10 @@ export const apiClient = async (endpoint, options = {}) => {
     headers,
   };
 
-  const response = await fetch(`${BASE_URL}${endpoint}`, config);
+  const url = `${BASE_URL.replace(/\/$/, '')}${endpoint.startsWith('/') ? '' : '/'}${endpoint}`;
+  console.log(`[API Client] Fetching: ${url} (Base: ${BASE_URL})`);
+
+  const response = await fetch(url, config);
   const data = await response.json();
 
   if (!response.ok) {
