@@ -306,7 +306,7 @@ def analyze_resume(text: str) -> Dict[str, Any]:
 
 def analyze_resume_pdf(source: Any) -> Dict[str, Any]:
     """Extracts text from a PDF resume and analyzes it."""
-    from ai.pdf_extractor import extract_text_from_pdf
+    from pdf_extractor import extract_text_from_pdf
     text = extract_text_from_pdf(source)
     return analyze_resume(text)
 

@@ -31,11 +31,11 @@ from typing import Any, Dict, List
 # Ensure repository root is on sys.path regardless of execution directory
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-from ai.evidence_analyzer import EvidenceAnalyzer, analyze_evidence
-from ai.hr_reviewer import HRReviewer, generate_hr_review
-from ai.interview_generator import InterviewQuestionGenerator, generate_interview_questions
-from ai.job_analyzer import JobAnalyzer, analyze_job
-from ai.matcher import (
+from evidence_analyzer import EvidenceAnalyzer, analyze_evidence
+from hr_reviewer import HRReviewer, generate_hr_review
+from interview_generator import InterviewQuestionGenerator, generate_interview_questions
+from job_analyzer import JobAnalyzer, analyze_job
+from matcher import (
     FINAL_TOP_LEVEL_KEYS,
     Matcher,
     generate_final_json,
@@ -44,9 +44,9 @@ from ai.matcher import (
     generate_resume_improvements,
     match_resume_to_job,
 )
-from ai.pdf_extractor import PDFExtractor, extract_text_from_pdf
-from ai.resume_analyzer import ResumeAnalyzer, analyze_resume, analyze_resume_pdf
-from ai.resume_improver import ResumeImprover, generate_resume_improvements
+from pdf_extractor import PDFExtractor, extract_text_from_pdf
+from resume_analyzer import ResumeAnalyzer, analyze_resume, analyze_resume_pdf
+from resume_improver import ResumeImprover, generate_resume_improvements
 
 
 

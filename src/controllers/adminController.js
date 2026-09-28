@@ -101,10 +101,11 @@ exports.getAIMonitoring = async (req, res, next) => {
 exports.getSystemHealth = async (req, res, next) => {
   try {
     const health = {
+      TEST_MARKER: 'NEW_CODE',
       backend: 'healthy',
       database: 'unhealthy',
-      aiService: 'unhealthy',
-      gemini: process.env.GEMINI_API_KEY ? 'configured' : 'not configured'
+      pythonAI: 'unhealthy',
+      gemini: 'not_configured'
     };
 
     // Check DB
@@ -113,16 +114,27 @@ exports.getSystemHealth = async (req, res, next) => {
       health.database = 'healthy';
     } catch (e) {
       console.error('Database health check failed', e);
+      health.database = 'unhealthy';
     }
 
-    // Check Python AI Service
+    // Check Python AI Service and Gemini
     try {
-      const response = await fetch('http://127.0.0.1:8000/health', { signal: AbortSignal.timeout(3000) });
+      const aiUrl = process.env.PYTHON_AI_URL;
+      if (!aiUrl) {
+        throw new Error('PYTHON_AI_URL is not configured');
+      }
+      
+      const response = await fetch(`${aiUrl}/health`, { signal: AbortSignal.timeout(5000) });
       if (response.ok) {
-        health.aiService = 'healthy';
+        health.pythonAI = 'healthy';
+        const aiData = await response.json();
+        health.gemini = aiData.gemini || 'not_configured';
+      } else {
+        health.pythonAI = 'unhealthy';
       }
     } catch (e) {
       console.error('AI Service health check failed', e);
+      health.pythonAI = 'unhealthy';
     }
 
     sendResponse(res, 200, { health });

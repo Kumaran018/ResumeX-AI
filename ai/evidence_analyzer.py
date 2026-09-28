@@ -47,7 +47,7 @@ def analyze_skill_evidence(skill: str, resume_data: Any) -> Dict[str, Any]:
     """
     if isinstance(resume_data, str):
         try:
-            from ai.resume_analyzer import analyze_resume
+            from resume_analyzer import analyze_resume
             resume_data = analyze_resume(resume_data)
         except ImportError:
             resume_data = {"raw_sections": {"text": resume_data}}

@@ -1,7 +1,8 @@
 const analyzeResumeAgainstJob = async (resumeText, jobDescriptionText) => {
-  const pythonApiUrl =
-    process.env.PYTHON_AI_API_URL ||
-    'http://127.0.0.1:8000/api/analyze';
+  if (!process.env.PYTHON_AI_URL) {
+    throw new Error('PYTHON_AI_URL is missing. Please configure it in your .env file.');
+  }
+  const pythonApiUrl = `${process.env.PYTHON_AI_URL}/api/analyze`;
 
   try {
     const response = await fetch(pythonApiUrl, {

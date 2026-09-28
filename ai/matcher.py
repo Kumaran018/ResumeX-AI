@@ -19,21 +19,21 @@ import re
 import json
 from typing import Any, Dict, List, Union
 
-from ai.evidence_analyzer import analyze_evidence
-from ai.job_analyzer import analyze_job
-from ai.resume_analyzer import analyze_resume
+from evidence_analyzer import analyze_evidence
+from job_analyzer import analyze_job
+from resume_analyzer import analyze_resume
 
-from ai.resume_improver import (
+from resume_improver import (
     generate_resume_improvements,
     ResumeImprover,
 )
 
-from ai.hr_reviewer import (
+from hr_reviewer import (
     generate_hr_review,
     HRReviewer,
 )
 
-from ai.interview_generator import (
+from interview_generator import (
     generate_interview_questions,
     InterviewQuestionGenerator,
 )
@@ -411,7 +411,7 @@ def match_resume_to_job(
 
         if resume.strip().lower().endswith(".pdf"):
 
-            from ai.pdf_extractor import (
+            from pdf_extractor import (
                 extract_text_from_pdf,
             )
 
@@ -545,7 +545,7 @@ def match_resume_to_job(
     resume_str = resume if isinstance(resume, str) else json.dumps(resume)
     job_str = job if isinstance(job, str) else json.dumps(job)
 
-    from ai.openai_service import get_openai_insights
+    from openai_service import get_openai_insights
     openai_result = get_openai_insights(
         resume_str,
         job_str,

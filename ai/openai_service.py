@@ -142,9 +142,9 @@ def get_openai_insights(
         return _fallback_response(resume_data, job_data, match_result, reason="setup_failed")
 
 def _fallback_response(resume_data: Dict[str, Any], job_data: Dict[str, Any], match_result: Dict[str, Any], reason: str = "api_error") -> Dict[str, Any]:
-    from ai.resume_improver import ResumeImprover
-    from ai.hr_reviewer import HRReviewer
-    from ai.interview_generator import InterviewQuestionGenerator
+    from resume_improver import ResumeImprover
+    from hr_reviewer import HRReviewer
+    from interview_generator import InterviewQuestionGenerator
     import os
     
     print("[LLM] LLM source: deterministic_fallback")

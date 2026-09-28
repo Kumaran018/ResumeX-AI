@@ -1,9 +1,10 @@
 from fastapi import FastAPI, HTTPException
+import os
 from pydantic import BaseModel
 from typing import Dict, Any
 import os
 
-from ai.matcher import generate_final_json
+from matcher import generate_final_json
 
 app = FastAPI(title="ResumeX-AI Python Service")
 
@@ -42,7 +43,6 @@ def analyze(req: AnalyzeRequest) -> Dict[str, Any]:
 @app.get("/health")
 def health() -> Dict[str, str]:
     gemini_status = "healthy" if os.getenv("GEMINI_API_KEY") else "not_configured"
-
     return {
         "status": "healthy",
         "gemini": gemini_status
