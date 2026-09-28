@@ -561,7 +561,6 @@ def match_resume_to_job(
     generated_features = openai_result.get("generatedFeatures", {})
 
     t5 = time.time()
-    print(f"[AI] OpenAI request: {int((t5-t4)*1000)} ms")
     print(f"[AI] Total analysis: {int((t5-t0)*1000)} ms")
     # FINAL RESULT
 

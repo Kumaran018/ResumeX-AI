@@ -1,13 +1,13 @@
+const dotenv = require('dotenv');
+// Load environment variables before anything else
+dotenv.config();
+
 const express = require('express');
 const cors = require('cors');
-const dotenv = require('dotenv');
-const connectDB = require('./src/config/db');
+const { connectDB } = require('./src/config/db');
 const { errorHandler } = require('./src/middlewares/errorHandler');
 const { AppError } = require('./src/utils/errors');
 const path = require('path');
-
-// Load environment variables
-dotenv.config();
 
 // Connect to Database
 connectDB();
@@ -27,6 +27,7 @@ app.use('/api/auth', require('./src/routes/authRoutes'));
 app.use('/api/resumes', require('./src/routes/resumeRoutes'));
 app.use('/api/jobs', require('./src/routes/jobRoutes'));
 app.use('/api/analyses', require('./src/routes/analysisRoutes'));
+app.use('/api/admin', require('./src/routes/adminRoutes'));
 
 // Analyze specific endpoint (alias for analysis creation as requested in prompt)
 app.post('/api/analyze', require('./src/middlewares/auth').protect, require('./src/controllers/analysisController').analyze);

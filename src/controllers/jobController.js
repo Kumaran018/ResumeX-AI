@@ -1,4 +1,4 @@
-const JobDescription = require('../models/JobDescription');
+const { pool } = require('../config/db');
 const { AppError, sendResponse } = require('../utils/errors');
 
 exports.createJob = async (req, res, next) => {
@@ -9,14 +9,12 @@ exports.createJob = async (req, res, next) => {
       return next(new AppError('Title and description are required', 400));
     }
 
-    const newJob = await JobDescription.create({
-      user: req.user.id,
-      title,
-      description,
-      requirements
-    });
+    const result = await pool.query(
+      'INSERT INTO jobs (user_id, title, description, requirements) VALUES ($1, $2, $3, $4) RETURNING *, id AS _id',
+      [req.user.id, title, description, requirements || []]
+    );
 
-    sendResponse(res, 201, { job: newJob });
+    sendResponse(res, 201, { job: result.rows[0] });
   } catch (err) {
     next(err);
   }
@@ -24,8 +22,8 @@ exports.createJob = async (req, res, next) => {
 
 exports.getAllJobs = async (req, res, next) => {
   try {
-    const jobs = await JobDescription.find({ user: req.user.id });
-    sendResponse(res, 200, { jobs });
+    const result = await pool.query('SELECT *, id AS _id FROM jobs WHERE user_id = $1', [req.user.id]);
+    sendResponse(res, 200, { jobs: result.rows });
   } catch (err) {
     next(err);
   }
@@ -33,7 +31,8 @@ exports.getAllJobs = async (req, res, next) => {
 
 exports.getJob = async (req, res, next) => {
   try {
-    const job = await JobDescription.findOne({ _id: req.params.id, user: req.user.id });
+    const result = await pool.query('SELECT *, id AS _id FROM jobs WHERE id = $1 AND user_id = $2', [req.params.id, req.user.id]);
+    const job = result.rows[0];
     if (!job) {
       return next(new AppError('No job description found with that ID', 404));
     }
