@@ -54,7 +54,7 @@ exports.analyze = async (req, res, next) => {
            WHERE id = $12 RETURNING *, id AS _id`,
           [
             aiResult.score, aiResult.feedback, aiResult.missingSkills, aiResult.matchingSkills, aiResult.weakEvidence,
-            aiResult.keywordAnalysis, aiResult.formatting, JSON.stringify(aiResult.improvements), aiResult.hrReview,
+            JSON.stringify(aiResult.keywordAnalysis), JSON.stringify(aiResult.formatting), JSON.stringify(aiResult.improvements), JSON.stringify(aiResult.hrReview),
             JSON.stringify(aiResult.interviewQuestions), aiResult.interviewPreparation, analysis.id
           ]
         );
@@ -67,7 +67,7 @@ exports.analyze = async (req, res, next) => {
           ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) RETURNING *, id AS _id`,
           [
             req.user.id, resume.id, job.id, aiResult.score, aiResult.feedback, aiResult.missingSkills, aiResult.matchingSkills, aiResult.weakEvidence,
-            aiResult.keywordAnalysis, aiResult.formatting, JSON.stringify(aiResult.improvements), aiResult.hrReview,
+            JSON.stringify(aiResult.keywordAnalysis), JSON.stringify(aiResult.formatting), JSON.stringify(aiResult.improvements), JSON.stringify(aiResult.hrReview),
             JSON.stringify(aiResult.interviewQuestions), aiResult.interviewPreparation
           ]
         );

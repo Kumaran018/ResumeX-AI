@@ -19,9 +19,11 @@ const analyzeResumeAgainstJob = async (resumeText, jobDescriptionText) => {
     if (!response.ok) {
       const errText = await response.text();
 
-      throw new Error(
+      const error = new Error(
         `Python AI service returned status: ${response.status} - ${errText}`
       );
+      error.isPythonServiceError = true;
+      throw error;
     }
 
     const aiResult = await response.json();
@@ -63,8 +65,12 @@ const analyzeResumeAgainstJob = async (resumeText, jobDescriptionText) => {
       error.message
     );
 
+    if (error.isPythonServiceError) {
+      throw error;
+    }
+
     throw new Error(
-      'Failed to reach Python AI service. Please ensure the Python AI service is running.'
+      'Failed to reach Python AI service. Please ensure the Python AI service is running. Details: ' + error.message
     );
   }
 };
